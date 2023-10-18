@@ -1,4 +1,5 @@
 const express = require("express");
+const serverless = require("serverless-http");
 const cors = require("cors");
 require("dotenv").config();
 const Authroutes = require("./Routes/auth");
@@ -22,3 +23,4 @@ app.use("/reviews", ReviewRoutes);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+module.exports.handler = serverless(app);
