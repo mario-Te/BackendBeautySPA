@@ -1,5 +1,4 @@
 const express = require("express");
-const serverless = require("serverless-http");
 const cors = require("cors");
 require("dotenv").config();
 const Authroutes = require("./Routes/auth");
@@ -9,7 +8,7 @@ const AppointRoutes = require("./Routes/appointments");
 const ReviewRoutes = require("./Routes/reviews");
 const ConnectDb = require("./db");
 const app = express();
-const port = 5000; // Choose any port number you prefer
+const port = 4000; // Choose any port number you prefer
 
 ConnectDb();
 app.use(cors());
@@ -23,4 +22,3 @@ app.use("/reviews", ReviewRoutes);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-module.exports.handler = serverless(app);
