@@ -14,7 +14,7 @@ ConnectDb();
 app.use(
   cors({
     origin: "spa-xi-mauve.vercel.app",
-    methods: ["POST", "PUT", "Delete", "GET"],
+    methods: ["POST", "GET"],
     credentials: true,
   })
 );
