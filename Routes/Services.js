@@ -45,7 +45,7 @@ router.get("/:title", async (req, res) => {
   }
 });
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/services" });
 
 router.post("/add", verifyAdmin, upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -100,20 +100,3 @@ router.put("/:title", verifyAdmin, upload.single("file"), async (req, res) => {
 });
 
 module.exports = router;
-const handleFile = (file) => {
-  const destinationFolder = "../../PP/Client/public/images/services"; // Specify the destination folder here
-  const { filename, originalname, path: filePath } = file;
-  // Create the destination folder if it doesn't exist
-  if (!fs.existsSync(destinationFolder)) {
-    fs.mkdirSync(destinationFolder);
-  }
-  // Get the file extension from the original file name
-  const fileExtension = path.extname(originalname);
-  // Generate a new file name with the original extension
-  const newFileName = `${filename}${fileExtension}`;
-  // Move the file to the destination folder with the new file name
-  const newFilePath = path.join(destinationFolder, newFileName);
-  fs.renameSync(filePath, newFilePath);
-
-  return newFileName;
-};
