@@ -13,7 +13,7 @@ const port = 4000; // Choose any port number you prefer
 ConnectDb();
 app.use(cors());
 app.use(express.json());
-
+app.use(express.static(path.join(__dirname, "uploads")));
 app.use("/auth", Authroutes);
 app.use("/services", ServicesRoutes);
 app.use("/o", webRoutes);
