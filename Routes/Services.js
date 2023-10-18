@@ -5,6 +5,18 @@ const router = express.Router();
 const verifyAdmin = require("./adminMiddleware");
 const fs = require("fs");
 const path = require("path");
+const storage = multer.diskStorage({
+  // Set the destination directory for uploaded files
+  destination: function (req, file, cb) {
+    cb(null, "uploads"); // Replace "uploads" with your desired directory
+  },
+  // Set the filename for uploaded files
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix);
+  },
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -45,7 +57,7 @@ router.get("/:title", async (req, res) => {
   }
 });
 
-const upload = multer({ dest: "uploads/services" });
+const upload = multer({ storage });
 
 router.post("/add", verifyAdmin, upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -57,7 +69,7 @@ router.post("/add", verifyAdmin, upload.single("file"), async (req, res) => {
     const { description, price, title, summary } = req.body;
 
     const newService = new Service({
-      image: handleFile(req.file),
+      image: req.file,
       description,
       price,
       summary,

@@ -157,15 +157,14 @@ router.get("/services/:title", async (req, res) => {
 });
 
 const storage = multer.diskStorage({
+  // Set the destination directory for uploaded files
   destination: function (req, file, cb) {
-    const destinationFolder = "../../PP/Client/public/images/users"; // Specify the destination folder here
-    cb(null, destinationFolder);
+    cb(null, "uploads"); // Replace "uploads" with your desired directory
   },
+  // Set the filename for uploaded files
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix);
   },
 });
 
