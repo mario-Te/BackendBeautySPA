@@ -6,14 +6,14 @@ const verifyAdmin = require("./adminMiddleware");
 const fs = require("fs");
 const path = require("path");
 const storage = multer.diskStorage({
-  // Set the destination directory for uploaded files
   destination: function (req, file, cb) {
     cb(null, "uploads"); // Replace "uploads" with your desired directory
   },
-  // Set the filename for uploaded files
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
+    const extension = path.extname(file.originalname);
+    const filename = file.fieldname + "-" + uniqueSuffix + extension;
+    cb(null, filename);
   },
 });
 
@@ -69,7 +69,7 @@ router.post("/add", verifyAdmin, upload.single("file"), async (req, res) => {
     const { description, price, title, summary } = req.body;
 
     const newService = new Service({
-      image: req.file,
+      image: req.file.filename,
       description,
       price,
       summary,
@@ -78,7 +78,8 @@ router.post("/add", verifyAdmin, upload.single("file"), async (req, res) => {
     await newService.save();
     res.status(201).json({ message: "New Service is added" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user data" });
+    console.log(error);
+    res.status(500).json({ error: "Failed to Add Service" });
   }
 });
 router.put("/:title", verifyAdmin, upload.single("file"), async (req, res) => {
@@ -91,7 +92,7 @@ router.put("/:title", verifyAdmin, upload.single("file"), async (req, res) => {
       { title: title },
       {
         $set: {
-          image: req.file ? handleFile(req.file) : service.image,
+          image: req.file ? req.file.filename : service.image,
           title: newtitle ? newtitle : service.title,
           description: description ? description : service.description,
           price: price ? price : service.price,

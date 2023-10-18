@@ -1,12 +1,24 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const User = require("../models/User");
 const multer = require("multer");
 const verifyToken = require("./middlware");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads"); // Replace "uploads" with your desired directory
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const extension = path.extname(file.originalname);
+    const filename = file.fieldname + "-" + uniqueSuffix + extension;
+    cb(null, filename);
+  },
+});
+
 router.get("/emps/:servicename", async (req, res) => {
   try {
     const { servicename } = req.params;
@@ -156,18 +168,6 @@ router.get("/services/:title", async (req, res) => {
   }
 });
 
-const storage = multer.diskStorage({
-  // Set the destination directory for uploaded files
-  destination: function (req, file, cb) {
-    cb(null, "uploads"); // Replace "uploads" with your desired directory
-  },
-  // Set the filename for uploaded files
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
-  },
-});
-
 const upload = multer({ storage });
 router.post("/addUser", upload.single("file"), async (req, res) => {
   try {
@@ -257,8 +257,7 @@ router.post(
   verifyToken,
   async (req, res) => {
     try {
-      const { password, bio, speclization } = req.body;
-      var objForUpdate = {};
+      const { password, bio } = req.body;
 
       // Perform validation and save user to the database
 
@@ -276,7 +275,6 @@ router.post(
             $set: {
               Bio: bio ? bio : user.Bio,
               Image: req.file ? req.file.filename : user.Image,
-              speclization: speclization ? speclization : user.speclization,
             },
           }
         );
