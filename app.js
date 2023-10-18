@@ -13,7 +13,7 @@ const port = 5000; // Choose any port number you prefer
 ConnectDb();
 app.use(
   cors({
-    origin: "beauty-clinic-spa.vercel.app",
+    origin: "spa-xi-mauve.vercel.app",
     methods: ["POST", "PUT", "Delete", "GET"],
     credentials: true,
   })
