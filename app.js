@@ -11,9 +11,17 @@ const app = express();
 const port = 5000; // Choose any port number you prefer
 
 ConnectDb();
-app.use(cors());
+app.use(
+  cors({
+    origin: "beauty-clinic-spa.vercel.app",
+    methods: ["POST", "PUT", "Delete", "GET"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-
+app.get("/", (req, res) => {
+  res.json("Hello");
+});
 app.use("/auth", Authroutes);
 app.use("/services", ServicesRoutes);
 app.use("/o", webRoutes);
