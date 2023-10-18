@@ -11,17 +11,9 @@ const app = express();
 const port = 5000; // Choose any port number you prefer
 
 ConnectDb();
-app.use(
-  cors({
-    origin: "spa-xi-mauve.vercel.app",
-    methods: ["POST", "GET"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.json("Hello");
-});
+
 app.use("/auth", Authroutes);
 app.use("/services", ServicesRoutes);
 app.use("/o", webRoutes);
